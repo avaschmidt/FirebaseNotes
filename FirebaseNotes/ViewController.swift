@@ -31,6 +31,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
        var newStu = StudentClass(name: theName, age: theAge)
         studentArray.append(newStu)
         newStu.saveToFirebase()
+        self.tableViewOutlet.reloadData()
     }
     
     
@@ -46,12 +47,13 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return names.count
+        return studentArray.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "myCell")!
-        cell.textLabel?.text = "\(names[indexPath.row])"
+        cell.textLabel?.text = "\(studentArray[indexPath.row].name)"
+        cell.detailTextLabel?.text = "\(studentArray[indexPath.row].age)"
         return cell
     }
     
@@ -59,21 +61,29 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
     
 
     func readFromFirebase(){
-        ref.child("students").observe(.childAdded, with: { (snapshot) in
+       // ref.child("students").observe(.childAdded, with: { (snapshot) in
+        ref.child("students2").observe(.childAdded, with: { (snapshot) in
+
                    // snapshot is a dictionary with a key and a value
                     
                     // this gets each name from each snapshot
-                    let n = snapshot.value as! String
+                   // let n = snapshot.value as! String
+                let dict = snapshot.value as! [String:Any]
                     // adds the name to an array if the name is not already there
-                    if !self.names.contains(n){
-                        self.names.append(n)
-                        print(n)
-                    self.tableViewOutlet.reloadData()
-                    }
+//                    if !self.names.contains(n){
+//                        self.names.append(n)
+//                        print(n)
+//                    self.tableViewOutlet.reloadData()
+//                    }
+            let s = StudentClass(dict: dict)
+            studentArray.append(s)
+            self.tableViewOutlet.reloadData()
+
+
                 })
         
         //called after .childAdded is done
-                ref.child("students").observeSingleEvent(of: .value, with: { snapshot in
+                ref.child("students2").observeSingleEvent(of: .value, with: { snapshot in
                         print("--inital load has completed and the last user was read--")
                     print(self.names)
                     self.tableViewOutlet.reloadData()
