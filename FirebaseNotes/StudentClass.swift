@@ -2,10 +2,11 @@ import Foundation
 import FirebaseCore
 import FirebaseDatabase
 
-var ref2 = Database.database().reference()
+
 
 class StudentClass{
-    
+    var ref = Database.database().reference()
+    var key = ""
     var name : String
     var age : Int
     
@@ -33,7 +34,8 @@ class StudentClass{
     
     func saveToFirebase(){
         let dict = ["name": name, "age":age] as [String: Any]
-        ref2.child("students2").childByAutoId().setValue(dict)
+        ref.child("students2").childByAutoId().setValue(dict)
+        
     }
     
     

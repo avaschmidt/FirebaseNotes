@@ -20,7 +20,7 @@ class ViewController: UIViewController, UITableViewDelegate, UITableViewDataSour
         tableViewOutlet.delegate = self
         tableViewOutlet.dataSource = self
         //initializing firebase variable
-        ref = Database.database().reference()
+        // ref = Database.database().reference()
         readFromFirebase()
     
     }
